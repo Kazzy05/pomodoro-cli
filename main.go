@@ -1,6 +1,7 @@
 package main
 
 import (
+    "flag"
 	"fmt"
 	"os"
 	"os/signal"
@@ -43,10 +44,19 @@ func runTimer(duration time.Duration, label string, color string) {
 }
 
 func main() {
-    fmt.Println("Pomodoro Timer Start! (Ctrl+C to quit)")
+    // Define flags with default values (25 min work, 5 min break)
+    workMin := flag.Int("w", 25, "Work duration in minutes")
+    breakMin := flag.Int("b", 5, "Break duration in minutes")
+
+    // Parse the flags provided by the user
+    flag.Parse()
+
+    fmt.Printf("Pomodoro Started! (Work: %d min, Break: %d min)\n", *workMin, *breakMin)
+    fmt.Println("Press Ctrl+C to quit")
 
     for {
-        runTimer(25*time.Minute, "WORK", colorRed)
-        runTimer(5*time.Minute, "BREAK", colorGreen)
+        // Convert the flag valus (int) into time.Duration
+        runTimer(time.Duration(*workMin)*time.Minute, "WORK", colorRed)
+        runTimer(time.Duration(*breakMin)*time.Minute, "BREAK", colorGreen)
     }
 }
